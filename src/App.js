@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { Amplify } from 'aws-amplify';
+import { Authenticator, useTheme, View, Image } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 
-function App() {
+import { awsExport } from './aws-exports';
+Amplify.configure(awsExport);
+
+const components = {
+  Header() {
+    const { tokens } = useTheme();
+
+    return (
+      <View textAlign='center' padding={tokens.space.large}>
+        <Image alt='logo' src='' />
+      </View>
+    );
+  },
+};
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Authenticator loginMechanisms={['email']} components={components}>
+      {({ signOut, user }) => (
+        <main>
+          <h1>Hello {user.username}</h1>
+          <button onClick={signOut}>Sign out</button>
+        </main>
+      )}
+    </Authenticator>
   );
 }
-
-export default App;
